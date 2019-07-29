@@ -45,6 +45,9 @@ zip_close:function(archive:pointer):integer;cdecl;
 
 zip_file_add:function(archive:pointer;name:pchar;source:pointer;flags:integer):int64;cdecl;
 zip_file_replace:function(archive:pointer;index:int64;source:pointer;flags:integer):integer;cdecl;
+zip_dir_add:function(archive:pointer;name:pchar;flags:integer):int64;cdecl;
+zip_delete:function(archive:pointer;index:int64):integer;cdecl;
+zip_rename:function(archive:pointer;index:int64;name:pchar):integer;cdecl;
 
 zip_source_buffer:function(archive:pointer;data:pointer;len:int64;freep:integer):pointer;cdecl;
 zip_source_free:procedure(source:pointer);cdecl;
@@ -74,6 +77,9 @@ if lib=thandle(-1) then exit;
 
 @zip_file_add:=getprocaddress(lib,'zip_file_add');
 @zip_file_replace:=getprocaddress(lib,'zip_file_replace');
+@zip_dir_add:=getprocaddress(lib,'zip_dir_add');
+@zip_delete:=getprocaddress(lib,'zip_delete');
+@zip_rename:=getprocaddress(lib,'zip_rename');
 
 @zip_source_buffer:=getprocaddress(lib,'zip_source_buffer');
 @zip_source_free:=getprocaddress(lib,'zip_source_free');
