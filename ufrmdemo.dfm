@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 655
   Top = 150
-  Width = 595
+  Width = 660
   Height = 305
   Caption = 'libzip demo'
   Color = clBtnFace
@@ -89,6 +89,15 @@ object Form1: TForm1
     Caption = 'Extract file'
     TabOrder = 6
     OnClick = Button6Click
+  end
+  object Button7: TButton
+    Left = 552
+    Top = 192
+    Width = 75
+    Height = 25
+    Caption = 'Update File'
+    TabOrder = 7
+    OnClick = Button7Click
   end
   object OpenDialog1: TOpenDialog
     Left = 88

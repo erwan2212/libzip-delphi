@@ -20,6 +20,23 @@ uses windows,sysutils;
   TUINT32Array = array of UINT32;
   PUINT32 = ^UINT32;
   PBYTE = ^byte;
+const
+ ZIP_FL_NOCASE=		1; //* ignore case on name lookup */
+ZIP_FL_NODIR=		2; //* ignore directory component */
+ZIP_FL_COMPRESSED=	4; //* read compressed data */
+ZIP_FL_UNCHANGED=	8; //* use original data, ignoring changes */
+ZIP_FL_RECOMPRESS=      16; //* force recompression of data */
+ZIP_FL_ENCRYPTED=       32; //* read encrypted data (implies ZIP_FL_COMPRESSED) */
+ZIP_FL_ENC_GUESS=        0; //* guess string encoding (is default) */
+ZIP_FL_ENC_RAW=         64; //* get unmodified string */
+ZIP_FL_ENC_STRICT=     128; //* follow specification strictly */
+ZIP_FL_LOCAL=	      256; //* in local header */
+ZIP_FL_CENTRAL=	      512; //* in central directory */
+                          // 1024    reserved for internal use */
+ZIP_FL_ENC_UTF_8=     2048; //* string is UTF-8 encoded */
+ZIP_FL_ENC_CP437=     4096; //* string is CP437 encoded */
+ZIP_FL_OVERWRITE=     8192; //* zip_file_add: if file with name exists, overwrite (replace) it */
+
 
 type tzip_stat =record
      valid:int64;                 //* which fields have valid values */
@@ -55,6 +72,7 @@ zip_fread:function(file_:pointer;data:pointer;len:int64):int64;cdecl;
 zip_fclose:function(file_:pointer):integer;cdecl;
 
 zip_source_buffer:function(archive:pointer;data:pointer;len:int64;freep:integer):pointer;cdecl;
+zip_source_file:function(archive:pointer; fname:pchar;start:int64;len:int64):pointer;cdecl;
 zip_source_free:procedure(source:pointer);cdecl;
 
 zip_stat_index:function(archive:pointer; index:int64;flags:integer;sb:pointer):integer;cdecl;
@@ -91,6 +109,7 @@ if lib=thandle(-1) then exit;
 @zip_rename:=getprocaddress(lib,'zip_rename');
 
 @zip_source_buffer:=getprocaddress(lib,'zip_source_buffer');
+@zip_source_file:=getprocaddress(lib,'zip_source_file');
 @zip_source_free:=getprocaddress(lib,'zip_source_free');
 
 @zip_stat_index:= getprocaddress(lib,'zip_stat_index');
