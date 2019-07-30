@@ -65,6 +65,8 @@ zip_fclose:function(file_:pointer):integer;cdecl;
 
 zip_name_locate:function(archive:pointer; fname:pchar;flags:integer):int64;cdecl;
 
+zip_get_error:function(archive:pointer):integer;cdecl;
+
 implementation
 
 var
@@ -101,7 +103,9 @@ if lib=thandle(-1) then exit;
 
 @zip_fopen_index:=getprocaddress(lib,'zip_fopen_index');
 @zip_fread:=getprocaddress(lib,'zip_fread');
-@zip_fclose:=getprocaddress(lib,'zip_fread');
+@zip_fclose:=getprocaddress(lib,'zip_fclose');
+
+@zip_get_error:=getprocaddress(lib,'zip_get_error');
 
 if not assigned (zip_open) then raise exception.create('zip_open unassigned');
 //

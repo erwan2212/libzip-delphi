@@ -178,7 +178,7 @@ end;
 procedure TForm1.Button4Click(Sender: TObject);
 begin
 if arch=nil then exit;
-zip_close (arch);
+if zip_close (arch)=-1 then showmessage('zip_close failed');
 ListView1.Clear ;
 end;
 
