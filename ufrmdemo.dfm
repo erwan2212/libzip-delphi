@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 314
   Top = 137
   Width = 595
-  Height = 267
-  Caption = 'Form1'
+  Height = 305
+  Caption = 'libzip demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,8 +14,8 @@ object Form1: TForm1
   PixelsPerInch = 120
   TextHeight = 16
   object Button1: TButton
-    Left = 88
-    Top = 16
+    Left = 440
+    Top = 112
     Width = 75
     Height = 25
     Caption = 'Add File'
@@ -27,7 +27,7 @@ object Form1: TForm1
     Top = 16
     Width = 75
     Height = 25
-    Caption = 'Stat'
+    Caption = 'List Files'
     TabOrder = 1
     OnClick = Button2Click
   end
@@ -49,13 +49,33 @@ object Form1: TForm1
     TabOrder = 3
     OnClick = Button4Click
   end
-  object Memo1: TMemo
-    Left = 176
-    Top = 64
-    Width = 249
-    Height = 153
-    Lines.Strings = (
-      'Memo1')
+  object Button5: TButton
+    Left = 440
+    Top = 152
+    Width = 75
+    Height = 25
+    Caption = 'Delete File'
     TabOrder = 4
+    OnClick = Button5Click
+  end
+  object ListView1: TListView
+    Left = 120
+    Top = 56
+    Width = 306
+    Height = 201
+    Columns = <
+      item
+        Caption = 'Name'
+        Width = 200
+      end
+      item
+        Caption = 'Size'
+      end>
+    TabOrder = 5
+    ViewStyle = vsReport
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 88
+    Top = 88
   end
 end

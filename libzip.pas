@@ -55,6 +55,10 @@ zip_source_free:procedure(source:pointer);cdecl;
 zip_stat_index:function(archive:pointer; index:int64;flags:integer;sb:pointer):integer;cdecl;
 zip_get_num_entries:function(archive:pointer; flags:integer):int64;cdecl;
 
+
+zip_get_name:function(archive:pointer; index:int64;flags:integer):pointer;cdecl;
+zip_name_locate:function(archive:pointer; fname:pchar;flags:integer):int64;cdecl;
+
 implementation
 
 var
@@ -86,6 +90,11 @@ if lib=thandle(-1) then exit;
 
 @zip_stat_index:= getprocaddress(lib,'zip_stat_index');
 @zip_get_num_entries:=getprocaddress(lib,'zip_get_num_entries');
+
+//get name of file by index
+@zip_get_name:=getprocaddress(lib,'zip_get_name');
+//get index of file by name
+@zip_name_locate:=getprocaddress(lib,'zip_name_locate');
 
 if not assigned (zip_open) then raise exception.create('zip_open unassigned');
 //
