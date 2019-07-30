@@ -1,9 +1,9 @@
 object Form1: TForm1
-  Left = 655
-  Top = 150
-  Width = 660
-  Height = 305
-  Caption = 'libzip demo'
+  Left = 314
+  Top = 137
+  Width = 672
+  Height = 402
+  Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,8 +14,8 @@ object Form1: TForm1
   PixelsPerInch = 120
   TextHeight = 16
   object Button1: TButton
-    Left = 464
-    Top = 112
+    Left = 560
+    Top = 72
     Width = 75
     Height = 25
     Caption = 'Add File'
@@ -41,7 +41,7 @@ object Form1: TForm1
     OnClick = Button3Click
   end
   object Button4: TButton
-    Left = 464
+    Left = 560
     Top = 16
     Width = 75
     Height = 25
@@ -49,20 +49,11 @@ object Form1: TForm1
     TabOrder = 3
     OnClick = Button4Click
   end
-  object Button5: TButton
-    Left = 464
-    Top = 152
-    Width = 75
-    Height = 25
-    Caption = 'Delete File'
-    TabOrder = 4
-    OnClick = Button5Click
-  end
   object ListView1: TListView
-    Left = 16
-    Top = 56
-    Width = 441
-    Height = 201
+    Left = 8
+    Top = 48
+    Width = 537
+    Height = 305
     Columns = <
       item
         Caption = 'Name'
@@ -78,29 +69,38 @@ object Form1: TForm1
       end>
     ReadOnly = True
     RowSelect = True
-    TabOrder = 5
+    TabOrder = 4
     ViewStyle = vsReport
   end
-  object Button6: TButton
-    Left = 464
-    Top = 192
+  object Button5: TButton
+    Left = 568
+    Top = 168
     Width = 75
     Height = 25
-    Caption = 'Extract file'
+    Caption = 'Delete File'
+    TabOrder = 5
+    OnClick = Button5Click
+  end
+  object Button6: TButton
+    Left = 568
+    Top = 224
+    Width = 75
+    Height = 25
+    Caption = 'Extract File'
     TabOrder = 6
     OnClick = Button6Click
   end
   object Button7: TButton
-    Left = 552
-    Top = 192
+    Left = 568
+    Top = 256
     Width = 75
     Height = 25
-    Caption = 'Update File'
+    Caption = 'Edit File'
     TabOrder = 7
     OnClick = Button7Click
   end
   object OpenDialog1: TOpenDialog
-    Left = 88
-    Top = 88
+    Left = 568
+    Top = 120
   end
 end

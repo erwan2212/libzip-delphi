@@ -12,9 +12,9 @@ type
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
-    Button5: TButton;
     OpenDialog1: TOpenDialog;
     ListView1: TListView;
+    Button5: TButton;
     Button6: TButton;
     Button7: TButton;
     procedure Button1Click(Sender: TObject);
@@ -283,17 +283,17 @@ if index=-1 then
   showmessage('wrong index');
   exit;
   end;
-// size
+// lets get the original uncompressed size
 sb:=AllocMem(sizeof(tzip_stat));
 zip_stat_index(arch,index,0,sb);
 size:=pzip_stat(sb)^.size;
-//open
+//lets open the file within the archive
 file_:=nil;
 file_:=zip_fopen_index(arch,index,0);
 data:=allocmem(size);
 size:= zip_fread (file_,data,size);
 if size=-1 then showmessage('zip_fread failed');
-//
+//lets dump it as a temp copy
 tempfile:=GetTempFile('tmp');
 //{$i-}deletefile(tempfile);{$i+}
 FS := TFileStream.Create(tempfile , fmOpenWrite or fmCreate);
@@ -304,8 +304,7 @@ fs.Free ;
 freemem(data);
 //
 zip_fclose (file_);
-// or wait until external program finishes
-//ShellExecute(Handle,'open',pzip_stat(sb)^.name,'', nil, SW_SHOWNORMAL) ;
+//if the file has changed (md5), lets update it in the archive
 if wait(tempfile)=1 then
   begin
   //source the update
