@@ -15,11 +15,13 @@ type
     Button5: TButton;
     OpenDialog1: TOpenDialog;
     ListView1: TListView;
+    Button6: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -86,6 +88,7 @@ procedure TForm1.Button4Click(Sender: TObject);
 begin
 if arch=nil then exit;
 zip_close (arch);
+ListView1.Clear ;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -106,6 +109,7 @@ for i:=0 to num-1 do
   lv:=ListView1.Items.Add ;
   lv.Caption :=pzip_stat(sb)^.name;
   lv.SubItems.Add(inttostr(pzip_stat(sb)^.size ));
+  lv.SubItems.Add(inttostr(pzip_stat(sb)^.comp_size  ));
   end;
 end;
 
@@ -126,6 +130,46 @@ if index=-1 then
 if zip_delete (arch,index)=-1 then showmessage('zip_delete failed');
 //
 Button2Click(self);
+end;
+
+procedure TForm1.Button6Click(Sender: TObject);
+var
+item:string;
+index,size:int64;
+file_,data:pointer;
+sb:pointer;
+fs:TFileStream;
+begin
+if arch=nil then exit;
+if ListView1.Selected =nil then exit;
+item:=ListView1.Selected.Caption ;
+//showmessage((ListView1.Selected.SubItems[0]));
+//size:=strtoint64(ListView1.Selected.SubItems[0]); //not working??
+index:=zip_name_locate(arch,pchar(item),0);
+if index=-1 then
+  begin
+  showmessage('wrong index');
+  exit;
+  end;
+// size
+sb:=AllocMem(sizeof(tzip_stat));
+zip_stat_index(arch,index,0,sb);
+size:=pzip_stat(sb)^.size;
+//open
+file_:=nil;
+file_:=zip_fopen_index(arch,index,0);
+data:=allocmem(size);
+size:= zip_fread (file_,data,size);
+if size=-1 then showmessage('zip_fread failed');
+//
+FS := TFileStream.Create(pzip_stat(sb)^.name , fmCreate);
+fs.Position :=0;
+//fs.Size:=size;
+fs.writeBuffer(data^,size );
+fs.Free ;
+//
+zip_fclose (file_);
+
 end;
 
 end.

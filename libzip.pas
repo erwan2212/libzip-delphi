@@ -49,6 +49,11 @@ zip_dir_add:function(archive:pointer;name:pchar;flags:integer):int64;cdecl;
 zip_delete:function(archive:pointer;index:int64):integer;cdecl;
 zip_rename:function(archive:pointer;index:int64;name:pchar):integer;cdecl;
 
+zip_fopen:function(archive:pointer; name:pchar;flags:integer):pointer;cdecl;
+zip_fopen_index:function(archive:pointer; index:int64;flags:integer):pointer;cdecl;
+zip_fread:function(file_:pointer;data:pointer;len:int64):int64;cdecl;
+zip_fclose:function(file_:pointer):integer;cdecl;
+
 zip_source_buffer:function(archive:pointer;data:pointer;len:int64;freep:integer):pointer;cdecl;
 zip_source_free:procedure(source:pointer);cdecl;
 
@@ -95,6 +100,11 @@ if lib=thandle(-1) then exit;
 @zip_get_name:=getprocaddress(lib,'zip_get_name');
 //get index of file by name
 @zip_name_locate:=getprocaddress(lib,'zip_name_locate');
+
+@zip_fopen_index:=getprocaddress(lib,'zip_fopen_index');
+@zip_fopen:=getprocaddress(lib,'zip_fopen');
+@zip_fread:=getprocaddress(lib,'zip_fread');
+@zip_fclose:=getprocaddress(lib,'zip_fclose');
 
 if not assigned (zip_open) then raise exception.create('zip_open unassigned');
 //

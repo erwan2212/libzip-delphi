@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 314
-  Top = 137
+  Left = 655
+  Top = 150
   Width = 595
   Height = 305
   Caption = 'libzip demo'
@@ -14,7 +14,7 @@ object Form1: TForm1
   PixelsPerInch = 120
   TextHeight = 16
   object Button1: TButton
-    Left = 440
+    Left = 464
     Top = 112
     Width = 75
     Height = 25
@@ -50,7 +50,7 @@ object Form1: TForm1
     OnClick = Button4Click
   end
   object Button5: TButton
-    Left = 440
+    Left = 464
     Top = 152
     Width = 75
     Height = 25
@@ -59,9 +59,9 @@ object Form1: TForm1
     OnClick = Button5Click
   end
   object ListView1: TListView
-    Left = 120
+    Left = 16
     Top = 56
-    Width = 306
+    Width = 441
     Height = 201
     Columns = <
       item
@@ -70,9 +70,25 @@ object Form1: TForm1
       end
       item
         Caption = 'Size'
+        Width = 100
+      end
+      item
+        Caption = 'Comp Size'
+        Width = 100
       end>
+    ReadOnly = True
+    RowSelect = True
     TabOrder = 5
     ViewStyle = vsReport
+  end
+  object Button6: TButton
+    Left = 464
+    Top = 192
+    Width = 75
+    Height = 25
+    Caption = 'Extract file'
+    TabOrder = 6
+    OnClick = Button6Click
   end
   object OpenDialog1: TOpenDialog
     Left = 88
