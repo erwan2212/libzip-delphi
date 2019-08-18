@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, dateutils, libzip, ComCtrls, shellapi, IdHashMessageDigest;
+  Dialogs, StdCtrls, dateutils, libzip, ComCtrls, shellapi, IdHashMessageDigest,idhash;
 
 type
 
@@ -30,6 +30,7 @@ type
     procedure Button7Click(Sender: TObject);
   private
     { Private declarations }
+    procedure list(path:string);
   public
     { Public declarations }
   end;
@@ -65,7 +66,11 @@ end;
    idmd5 := TIdHashMessageDigest5.Create;
    fs := TFileStream.Create(fileName, fmOpenRead OR fmShareDenyWrite) ;
    try
+   {$IFDEF FPC}
      result := idmd5.HashBytesAsHex(idmd5.HashStream(fs)) ;
+   {$else}
+     result := idmd5.AsHex(idmd5.Hashvalue(fs)) ;
+   {$endif}
    finally
      fs.Free;
      idmd5.Free;
@@ -94,7 +99,7 @@ begin
  SEInfo.cbSize := SizeOf(TShellExecuteInfo) ;
  with SEInfo do begin
  fMask := SEE_MASK_NOCLOSEPROCESS;
- Wnd := Application.Handle;
+ Wnd := form1.Handle; //application.Handle; //WidgetSet.AppHandle; //
  lpFile := PChar(ExecuteFile) ;
 {
 ParamString can contain the
@@ -199,6 +204,33 @@ if zip_close (arch)=-1
 //freemem(arch);
 arch:=nil;
 ListView1.Clear ;
+end;
+
+procedure tform1.list(path:string);
+var
+sb:pointer;
+num:int64;
+i:integer;
+lv:tlistitem;
+item:string;
+begin
+if arch=nil then exit;
+ListView1.Clear ;
+num:=zip_get_num_entries(arch,0);
+sb:=AllocMem(sizeof(tzip_stat));
+
+
+
+for i:=0 to num-1 do
+  begin
+  zip_stat_index(arch,i,0,sb);
+  lv:=ListView1.Items.Add ;
+  lv.Caption :=pzip_stat(sb)^.name;
+  //item:=extractfiledir('\'+pzip_stat(sb)^.name);
+  //if item='' then ;
+  lv.SubItems.Add(inttostr(pzip_stat(sb)^.size ));
+  lv.SubItems.Add(inttostr(pzip_stat(sb)^.comp_size  ));
+  end;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
