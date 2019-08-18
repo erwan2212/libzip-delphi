@@ -42,6 +42,7 @@ procedure init;
 
 var
 arch:pointer=nil;
+zipfile:string='';
 
 zip_open:function(path:pchar;flags:integer;errorp:pinteger):pointer;cdecl;
 zip_close:function(archive:pointer):integer;cdecl;
@@ -54,7 +55,6 @@ zip_rename:function(archive:pointer;index:int64;name:pchar):integer;cdecl;
 
 zip_source_buffer:function(archive:pointer;data:pointer;len:int64;freep:integer):pointer;cdecl;
 zip_source_free:procedure(source:pointer);cdecl;
-
 zip_source_file:function(archive:pointer; fname:pchar;  start:int64;len:int64):pointer;cdecl;
 
 zip_stat_index:function(archive:pointer; index:int64;flags:integer;sb:pointer):integer;cdecl;

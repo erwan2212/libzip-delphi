@@ -1,152 +1,165 @@
 object Form1: TForm1
   Left = 314
-  Height = 800
   Top = 137
-  Width = 1270
+  Width = 1278
+  Height = 837
   Caption = 'Form1'
-  ClientHeight = 800
-  ClientWidth = 1270
   Color = clBtnFace
-  DesignTimePPI = 120
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -25
   Font.Name = 'MS Sans Serif'
-  LCLVersion = '1.8.2.0'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 120
+  TextHeight = 29
   object Button1: TButton
     Left = 1050
-    Height = 48
     Top = 135
     Width = 140
+    Height = 48
     Caption = 'Add File'
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -25
     Font.Name = 'MS Sans Serif'
-    OnClick = Button1Click
+    Font.Style = []
     ParentFont = False
     TabOrder = 0
+    OnClick = Button1Click
   end
   object Button2: TButton
     Left = 330
-    Height = 48
     Top = 30
     Width = 140
+    Height = 48
     Caption = 'List Files'
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -25
     Font.Name = 'MS Sans Serif'
-    OnClick = Button2Click
+    Font.Style = []
     ParentFont = False
     TabOrder = 1
+    OnClick = Button2Click
   end
   object Button3: TButton
     Left = 15
-    Height = 48
     Top = 30
     Width = 140
+    Height = 48
     Caption = 'Open'
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -25
     Font.Name = 'MS Sans Serif'
-    OnClick = Button3Click
+    Font.Style = []
     ParentFont = False
     TabOrder = 2
+    OnClick = Button3Click
   end
   object Button4: TButton
     Left = 1050
-    Height = 48
     Top = 30
     Width = 140
+    Height = 48
     Caption = 'Close'
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -25
     Font.Name = 'MS Sans Serif'
-    OnClick = Button4Click
+    Font.Style = []
     ParentFont = False
     TabOrder = 3
+    OnClick = Button4Click
   end
   object ListView1: TListView
     Left = 20
-    Height = 353
     Top = 110
     Width = 768
-    Columns = <    
+    Height = 353
+    Columns = <
       item
         Caption = 'Name'
         Width = 375
-      end    
+      end
       item
         Caption = 'Size'
         Width = 188
-      end    
+      end
       item
         Caption = 'Comp Size'
         Width = 188
-      end    
+      end
       item
         Caption = 'DateTime'
         Width = 188
       end>
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -25
     Font.Name = 'MS Sans Serif'
-    ParentFont = False
+    Font.Style = []
     ReadOnly = True
     RowSelect = True
+    ParentFont = False
     TabOrder = 4
     ViewStyle = vsReport
   end
   object Button5: TButton
     Left = 1065
-    Height = 48
     Top = 315
     Width = 140
+    Height = 48
     Caption = 'Delete File'
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -25
     Font.Name = 'MS Sans Serif'
-    OnClick = Button5Click
+    Font.Style = []
     ParentFont = False
     TabOrder = 5
+    OnClick = Button5Click
   end
   object Button6: TButton
     Left = 1065
-    Height = 48
     Top = 420
     Width = 140
+    Height = 48
     Caption = 'Extract File'
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -25
     Font.Name = 'MS Sans Serif'
-    OnClick = Button6Click
+    Font.Style = []
     ParentFont = False
     TabOrder = 6
+    OnClick = Button6Click
   end
   object Button7: TButton
     Left = 1065
-    Height = 48
     Top = 480
     Width = 140
+    Height = 48
     Caption = 'Edit File'
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -25
     Font.Name = 'MS Sans Serif'
-    OnClick = Button7Click
+    Font.Style = []
     ParentFont = False
     TabOrder = 7
+    OnClick = Button7Click
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 28
     Top = 772
     Width = 1270
-    Font.Color = clWindowText
-    Font.Height = -25
-    Font.Name = 'MS Sans Serif'
+    Height = 28
     Panels = <>
-    ParentFont = False
   end
   object OpenDialog1: TOpenDialog
-    left = 1065
-    top = 225
+    Left = 1065
+    Top = 225
   end
 end

@@ -30,7 +30,8 @@ type
     procedure Button7Click(Sender: TObject);
   private
     { Private declarations }
-    procedure list(path:string);
+    function list(path:string):integer;
+    function refresh:boolean;
   public
     { Public declarations }
   end;
@@ -160,16 +161,21 @@ fs.ReadBuffer(buf^,size );
 fs.Free ;
 //
 //set to 0, zip_source_free must be called
-source:=zip_source_buffer(arch,buf,size ,-1);
+source:=zip_source_buffer(arch,buf,size ,0);
 //or
 //source:=zip_source_file(arch,pchar(filename),0,0);
 if source<>nil then
 begin
 if zip_file_add (arch,pchar(ExtractFileName(filename)),source,0)=-1
    then showmessage('zip_file_add failed')
-   else StatusBar1.SimpleText :='zip_file_add OK';
+   else
+   begin
+   StatusBar1.SimpleText :='zip_file_add OK';
+   //we need to close, open and list again...a lot can go wrong...
+   refresh;
+   end;
 //freemem(buf);
-//zip_source_free(source);
+//zip_source_free(source); //done by zip_file_add
 end;
 
 //
@@ -179,18 +185,19 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);
 var
   err:integer;
-  filename:string;
+  //filename:string;
 begin
 init;
 //
 OpenDialog1.InitialDir :=ExtractFileDir(Application.ExeName ); 
 OpenDialog1.Filter :='*.zip|*.zip';
 OpenDialog1.Execute ;
-filename:=  OpenDialog1.FileName;
-if filename ='' then exit;
+zipfile:=  OpenDialog1.FileName;
+if zipfile ='' then exit;
 //
-arch:=zip_open(pchar(filename),0,@err);
+arch:=zip_open(pchar(zipfile),0,@err);
 if arch=nil then begin showmessage(inttostr(err));exit;end;
+
 //
 Button2Click(self);
 end;
@@ -203,58 +210,49 @@ if zip_close (arch)=-1
    else StatusBar1.SimpleText :='zip_close OK';
 //freemem(arch);
 arch:=nil;
+zipfile :='';
 ListView1.Clear ;
 end;
 
-procedure tform1.list(path:string);
-var
-sb:pointer;
-num:int64;
-i:integer;
-lv:tlistitem;
-item:string;
+function tform1.refresh:boolean;
 begin
-if arch=nil then exit;
-ListView1.Clear ;
-num:=zip_get_num_entries(arch,0);
-sb:=AllocMem(sizeof(tzip_stat));
-
-
-
-for i:=0 to num-1 do
-  begin
-  zip_stat_index(arch,i,0,sb);
-  lv:=ListView1.Items.Add ;
-  lv.Caption :=pzip_stat(sb)^.name;
-  //item:=extractfiledir('\'+pzip_stat(sb)^.name);
-  //if item='' then ;
-  lv.SubItems.Add(inttostr(pzip_stat(sb)^.size ));
-  lv.SubItems.Add(inttostr(pzip_stat(sb)^.comp_size  ));
-  end;
+   zip_close (arch);
+   arch:=zip_open(pchar(zipfile),0,nil);
+   list('/');
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+function tform1.list(path:string):integer;
 var
 stat:tzip_stat;
 num:int64;
 i:integer;
 lv:tlistitem;
+item:string;
 begin
+result:=0;
 if arch=nil then exit;
 ListView1.Clear ;
 num:=zip_get_num_entries(arch,0);
+result:=num;
 
 for i:=0 to num-1 do
   begin
-  if zip_stat_index(arch,i,0,@stat)=0 then
-     begin
-     lv:=ListView1.Items.Add ;
-     lv.Caption :=stat.name;
-     lv.SubItems.Add(inttostr(stat.size ));
-     lv.SubItems.Add(inttostr(stat.comp_size  ));
-     lv.SubItems.Add(DateTimeToStr(UnixToDateTime  (stat.mtime)));
-     end;
-   end;
+  zip_stat_index(arch,i,0,@stat);
+  lv:=ListView1.Items.Add ;
+  lv.Caption :=stat.name;
+  //item:=extractfiledir('\'+pzip_stat(sb)^.name);
+  //if item='' then ;
+  lv.SubItems.Add(inttostr(stat.size ));
+  lv.SubItems.Add(inttostr(stat.comp_size  ));
+  lv.SubItems.Add(DateTimeToStr(UnixToDateTime  (stat.mtime)));
+  end;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+num:int64;
+begin
+num:=list('/');
 StatusBar1.SimpleText :='zip_get_num_entries OK '+inttostr(num);
 end;
 
@@ -274,7 +272,11 @@ if index=-1 then
   end;
 if zip_delete (arch,index)=-1
    then showmessage('zip_delete failed')
-   else StatusBar1.SimpleText :='zip_delete OK';
+   else
+   begin
+   StatusBar1.SimpleText :='zip_delete OK';
+   refresh;
+   end;
 //
 Button2Click(self);
 end;
@@ -284,7 +286,7 @@ var
 item:string;
 index,size:int64;
 file_,data:pointer;
-sb:pointer;
+stat:tzip_stat;
 fs:TFileStream;
 begin
 if arch=nil then exit;
@@ -299,17 +301,16 @@ if index=-1 then
   exit;
   end;
 // size
-sb:=AllocMem(sizeof(tzip_stat));
-zip_stat_index(arch,index,0,sb);
-size:=pzip_stat(sb)^.size;
+zip_stat_index(arch,index,0,@stat);
+size:=stat.size;
 //open
 file_:=nil;
 file_:=zip_fopen_index(arch,index,0);
 data:=allocmem(size);
 size:= zip_fread (file_,data,size);
-if size=-1 then showmessage('zip_fread failed');
+if size=-1 then begin showmessage('zip_fread failed');exit;end;
 //
-FS := TFileStream.Create(pzip_stat(sb)^.name , fmCreate);
+FS := TFileStream.Create(stat.name , fmCreate);
 fs.Position :=0;
 //fs.Size:=size;
 fs.writeBuffer(data^,size );
@@ -324,7 +325,7 @@ var
 item:string;
 index,size:int64;
 file_,data,source:pointer;
-sb:pointer;
+stat:tzip_stat;
 fs:TFileStream;
 tempfile:string;
 begin
@@ -340,15 +341,14 @@ if index=-1 then
   exit;
   end;
 // lets get the original uncompressed size
-sb:=AllocMem(sizeof(tzip_stat));
-zip_stat_index(arch,index,0,sb);
-size:=pzip_stat(sb)^.size;
+if zip_stat_index(arch,index,0,@stat)=-1 then begin showmessage('zip_stat_index failed');exit;end;
+size:=stat.size;
 //lets open the file within the archive
 file_:=nil;
 file_:=zip_fopen_index(arch,index,0);
 data:=allocmem(size);
 size:= zip_fread (file_,data,size);
-if size=-1 then showmessage('zip_fread failed');
+if size=-1 then begin showmessage('zip_fread failed');exit;end;
 //lets dump it as a temp copy
 tempfile:=GetTempFile('tmp');
 //{$i-}deletefile(tempfile);{$i+}
@@ -363,10 +363,10 @@ zip_fclose (file_);
 //if the file has changed (md5), lets update it in the archive
 if wait(tempfile)=1 then
   begin
-  //source the update
-  {//does not seem to work for now...
-  source:=zip_source_file(arch,pchar(tempfile),0,-1);
-  }
+  //source the update //works?
+  //source:=zip_source_file(arch,pchar(tempfile),0,0);
+
+  //or
 
   FS := TFileStream.Create(tempfile, fmOpenRead or fmShareDenyWrite);
   size:=fs.Size;
@@ -374,15 +374,23 @@ if wait(tempfile)=1 then
   fs.ReadBuffer(data^,size );
   fs.Free ;
   //
-  source:=zip_source_buffer(arch,data,size ,-1);
+  source:=zip_source_buffer(arch,data,size ,0);
+
   //freemem(data);
   //
 
   if source<>nil then
     begin
-    if zip_file_replace (arch,index,source,ZIP_FL_OVERWRITE)=-1 then showmessage('zip_file_replace failed');
-    //if zip_file_add (arch,pzip_stat(sb)^.name,source,ZIP_FL_OVERWRITE)=-1 then showmessage('zip_file_replace failed');
-    //zip_source_free(source);
+    if zip_file_replace (arch,index,source,0)=-1
+      then showmessage('zip_file_replace failed')
+      else
+      begin
+      StatusBar1.SimpleText :='zip_file_replace OK';
+      refresh;
+      end;
+    //or
+    //if zip_file_add (arch,stat.name,source,ZIP_FL_OVERWRITE)=-1 then showmessage('zip_file_replace failed');
+    //zip_source_free(source); //done by zip_file_replace
     end;
   end;
 {$i-}deletefile(tempfile);{$i+}
