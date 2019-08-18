@@ -1,106 +1,148 @@
 object Form1: TForm1
   Left = 314
+  Height = 603
   Top = 137
-  Width = 672
-  Height = 402
+  Width = 1008
   Caption = 'Form1'
+  ClientHeight = 603
+  ClientWidth = 1008
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
+  DesignTimePPI = 144
   Font.Color = clWindowText
-  Font.Height = -13
+  Font.Height = -20
   Font.Name = 'MS Sans Serif'
-  Font.Style = []
-  OldCreateOrder = False
-  PixelsPerInch = 120
-  TextHeight = 16
+  LCLVersion = '2.0.0.4'
   object Button1: TButton
-    Left = 560
-    Top = 72
-    Width = 75
-    Height = 25
+    Left = 840
+    Height = 38
+    Top = 108
+    Width = 112
     Caption = 'Add File'
-    TabOrder = 0
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'MS Sans Serif'
     OnClick = Button1Click
+    ParentFont = False
+    TabOrder = 0
   end
   object Button2: TButton
-    Left = 176
-    Top = 16
-    Width = 75
-    Height = 25
+    Left = 264
+    Height = 38
+    Top = 24
+    Width = 112
     Caption = 'List Files'
-    TabOrder = 1
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'MS Sans Serif'
     OnClick = Button2Click
+    ParentFont = False
+    TabOrder = 1
   end
   object Button3: TButton
-    Left = 8
-    Top = 16
-    Width = 75
-    Height = 25
+    Left = 12
+    Height = 38
+    Top = 24
+    Width = 112
     Caption = 'Open'
-    TabOrder = 2
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'MS Sans Serif'
     OnClick = Button3Click
+    ParentFont = False
+    TabOrder = 2
   end
   object Button4: TButton
-    Left = 560
-    Top = 16
-    Width = 75
-    Height = 25
+    Left = 840
+    Height = 38
+    Top = 24
+    Width = 112
     Caption = 'Close'
-    TabOrder = 3
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'MS Sans Serif'
     OnClick = Button4Click
+    ParentFont = False
+    TabOrder = 3
   end
   object ListView1: TListView
-    Left = 8
-    Top = 48
-    Width = 537
-    Height = 305
-    Columns = <
+    Left = 16
+    Height = 353
+    Top = 88
+    Width = 768
+    Columns = <    
       item
         Caption = 'Name'
-        Width = 200
-      end
+        Width = 300
+      end    
       item
         Caption = 'Size'
-        Width = 100
-      end
+        Width = 150
+      end    
       item
         Caption = 'Comp Size'
-        Width = 100
+        Width = 150
+      end    
+      item
+        Caption = 'DateTime'
+        Width = 150
       end>
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'MS Sans Serif'
+    ParentFont = False
     ReadOnly = True
     RowSelect = True
     TabOrder = 4
     ViewStyle = vsReport
   end
   object Button5: TButton
-    Left = 568
-    Top = 168
-    Width = 75
-    Height = 25
+    Left = 852
+    Height = 38
+    Top = 252
+    Width = 112
     Caption = 'Delete File'
-    TabOrder = 5
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'MS Sans Serif'
     OnClick = Button5Click
+    ParentFont = False
+    TabOrder = 5
   end
   object Button6: TButton
-    Left = 568
-    Top = 224
-    Width = 75
-    Height = 25
+    Left = 852
+    Height = 38
+    Top = 336
+    Width = 112
     Caption = 'Extract File'
-    TabOrder = 6
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'MS Sans Serif'
     OnClick = Button6Click
+    ParentFont = False
+    TabOrder = 6
   end
   object Button7: TButton
-    Left = 568
-    Top = 256
-    Width = 75
-    Height = 25
+    Left = 852
+    Height = 38
+    Top = 384
+    Width = 112
     Caption = 'Edit File'
-    TabOrder = 7
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'MS Sans Serif'
     OnClick = Button7Click
+    ParentFont = False
+    TabOrder = 7
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 36
+    Top = 567
+    Width = 1008
+    Panels = <>
   end
   object OpenDialog1: TOpenDialog
-    Left = 568
-    Top = 120
+    left = 852
+    top = 180
   end
 end

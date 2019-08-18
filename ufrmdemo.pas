@@ -4,9 +4,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls,libzip, ComCtrls,shellapi,IdHashMessageDigest, idHash;
+  Dialogs, StdCtrls, dateutils, libzip, ComCtrls, shellapi, IdHashMessageDigest;
 
 type
+
+  { TForm1 }
+
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
@@ -17,6 +20,7 @@ type
     Button5: TButton;
     Button6: TButton;
     Button7: TButton;
+    StatusBar1: TStatusBar;
     procedure Button1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
@@ -29,6 +33,8 @@ type
   public
     { Public declarations }
   end;
+
+
 
 var
   Form1: TForm1;
@@ -59,7 +65,7 @@ end;
    idmd5 := TIdHashMessageDigest5.Create;
    fs := TFileStream.Create(fileName, fmOpenRead OR fmShareDenyWrite) ;
    try
-     result := idmd5.AsHex(idmd5.HashValue(fs)) ;
+     result := idmd5.HashBytesAsHex(idmd5.HashStream(fs)) ;
    finally
      fs.Free;
      idmd5.Free;
@@ -103,7 +109,7 @@ If ommited, the current directory is used.
 // lpDirectory := PChar(StartInString) ;
  nShow := SW_SHOWNORMAL;
  end;
- if ShellExecuteEx(@SEInfo) then begin
+ if ShellExecuteExA (@SEInfo) then begin
  repeat
  Application.ProcessMessages;
  GetExitCodeProcess(SEInfo.hProcess, ExitCode) ;
@@ -149,9 +155,18 @@ fs.ReadBuffer(buf^,size );
 fs.Free ;
 //
 //set to 0, zip_source_free must be called
-source:=zip_source_buffer(arch,buf,size ,0);
-if zip_file_add (arch,pchar(ExtractFileName(filename)),source,0)=-1 then showmessage('zip_file_add failed');
-zip_source_free(source);
+source:=zip_source_buffer(arch,buf,size ,-1);
+//or
+//source:=zip_source_file(arch,pchar(filename),0,0);
+if source<>nil then
+begin
+if zip_file_add (arch,pchar(ExtractFileName(filename)),source,0)=-1
+   then showmessage('zip_file_add failed')
+   else StatusBar1.SimpleText :='zip_file_add OK';
+//freemem(buf);
+//zip_source_free(source);
+end;
+
 //
 Button2Click(self);
 end;
@@ -178,13 +193,17 @@ end;
 procedure TForm1.Button4Click(Sender: TObject);
 begin
 if arch=nil then exit;
-if zip_close (arch)=-1 then showmessage('zip_close failed');
+if zip_close (arch)=-1
+   then showmessage('zip_close failed')
+   else StatusBar1.SimpleText :='zip_close OK';
+//freemem(arch);
+arch:=nil;
 ListView1.Clear ;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 var
-sb:pointer;
+stat:tzip_stat;
 num:int64;
 i:integer;
 lv:tlistitem;
@@ -192,16 +211,19 @@ begin
 if arch=nil then exit;
 ListView1.Clear ;
 num:=zip_get_num_entries(arch,0);
-sb:=AllocMem(sizeof(tzip_stat));
 
 for i:=0 to num-1 do
   begin
-  zip_stat_index(arch,i,0,sb);
-  lv:=ListView1.Items.Add ;
-  lv.Caption :=pzip_stat(sb)^.name;
-  lv.SubItems.Add(inttostr(pzip_stat(sb)^.size ));
-  lv.SubItems.Add(inttostr(pzip_stat(sb)^.comp_size  ));
-  end;
+  if zip_stat_index(arch,i,0,@stat)=0 then
+     begin
+     lv:=ListView1.Items.Add ;
+     lv.Caption :=stat.name;
+     lv.SubItems.Add(inttostr(stat.size ));
+     lv.SubItems.Add(inttostr(stat.comp_size  ));
+     lv.SubItems.Add(DateTimeToStr(UnixToDateTime  (stat.mtime)));
+     end;
+   end;
+StatusBar1.SimpleText :='zip_get_num_entries OK '+inttostr(num);
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -218,7 +240,9 @@ if index=-1 then
   showmessage('wrong index');
   exit;
   end;
-if zip_delete (arch,index)=-1 then showmessage('zip_delete failed');
+if zip_delete (arch,index)=-1
+   then showmessage('zip_delete failed')
+   else StatusBar1.SimpleText :='zip_delete OK';
 //
 Button2Click(self);
 end;
@@ -318,7 +342,7 @@ if wait(tempfile)=1 then
   fs.ReadBuffer(data^,size );
   fs.Free ;
   //
-  source:=zip_source_buffer(arch,data,size ,0);
+  source:=zip_source_buffer(arch,data,size ,-1);
   //freemem(data);
   //
 
@@ -326,7 +350,7 @@ if wait(tempfile)=1 then
     begin
     if zip_file_replace (arch,index,source,ZIP_FL_OVERWRITE)=-1 then showmessage('zip_file_replace failed');
     //if zip_file_add (arch,pzip_stat(sb)^.name,source,ZIP_FL_OVERWRITE)=-1 then showmessage('zip_file_replace failed');
-    zip_source_free(source);
+    //zip_source_free(source);
     end;
   end;
 {$i-}deletefile(tempfile);{$i+}
